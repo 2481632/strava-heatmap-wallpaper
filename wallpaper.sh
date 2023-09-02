@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# colors
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
 # Make sure sqlite3 is installed 
 if ! command -v sqlite3 &> /dev/null
 then
@@ -17,7 +21,7 @@ fi
 # Check if gpsbabel is installed
 if ! command -v gunzip &> /dev/null
 then
-    echo "gunzip could not be found. Please install gunzip and try again. "
+    echo "gunzip could not be found. Please install gunzip and try again."
     exit
 fi
 
@@ -26,8 +30,16 @@ DATABASE=${XDG_CONFIG_HOME:-~/.config}/strava_wallpaper/strava.sqlite
 ACTIVITIES=~/.local/share/strava_wallpaper/activities/
 CONFIG=${XDG_CONFIG_HOME:-~/.config}/strava_wallpaper/config.yml
 
-mkdir -p ${XDG_CONFIG_HOME:-~/.config}/strava_wallpaper/
+mkdir -p $BASEDIR
 mkdir -p $ACTIVITIES
+
+# Chack if database was being created
+if ! test -f $CONFIG; then
+    echo -e "${RED}Config file not found.${NC}"
+    echo "Copy the sample config.yml file to $BASEDIR. You can use the following command to do this:"
+    echo "> cp config.yml $BASEDIR"
+    exit
+fi
 
 # Create database of activities
 # This will open a webbrowser where the user has to login in order to obtain a copy of activities. 
@@ -43,9 +55,8 @@ fi
 sqlite3 $DATABASE "DELETE FROM activity WHERE NOT type = 'Ride' OR type = 'Run'"
 
 # Downloading activities
-
 echo "Download activities. This might take a while..."
-strava-offline gpx --database $DATABASE --dir-activities $ACTIVITIES --config $CONFIG
+# strava-offline gpx --database $DATABASE --dir-activities $ACTIVITIES --config $CONFIG
 
 # Extract gz files
 echo "Extract activities..."
@@ -69,3 +80,4 @@ fi
 
 # Create image
 python ./strava_local_heatmap.py --dir $ACTIVITIES
+echo "Your heatmap has been saved to $PWD/heatmap.png" # TODO: Check if image was written successfully
