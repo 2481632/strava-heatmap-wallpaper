@@ -1,0 +1,5 @@
+# '_strava4_session' cookie value
+strava_cookie_strava4_session: YOUR_strava4_SESSION_COOKIE
+
+# Optional path to activities in Strava backup (no need to redownload these)
+# dir_activities_backup: DIRECTORY
