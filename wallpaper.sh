@@ -56,7 +56,7 @@ sqlite3 $DATABASE "DELETE FROM activity WHERE NOT type = 'Ride' OR type = 'Run'"
 
 # Downloading activities
 echo "Download activities. This might take a while..."
-# strava-offline gpx --database $DATABASE --dir-activities $ACTIVITIES --config $CONFIG
+strava-offline gpx --database $DATABASE --dir-activities $ACTIVITIES --config $CONFIG
 
 # Extract gz files
 echo "Extract activities..."
